@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running commitlint on commit message..."
+
+npx --no -- commitlint --edit "${1}"
