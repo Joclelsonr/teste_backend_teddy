@@ -1,0 +1,21 @@
+@URL = http://localhost:3000
+
+### create users
+POST {{ URL }}/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "jhondoe@email.com",
+  "password": "JohnDoe@123"
+}
+
+
+### login user
+POST {{ URL }}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jhondoe@email.com",
+  "password": "JohnDoe@123"
+}
