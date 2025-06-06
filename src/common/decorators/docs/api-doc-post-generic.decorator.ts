@@ -1,16 +1,25 @@
-import { applyDecorators, Type } from '@nestjs/common';
+import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
-  ApiCreatedResponse,
   ApiConflictResponse,
   ApiOperation,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 
-export function ApiDocGenericPost(value: string, modelType: Type<unknown>) {
+export function ApiDocGenericPost(value: string) {
   return applyDecorators(
-    ApiCreatedResponse({
+    ApiOkResponse({
       description: `The ${value} successfully created`,
-      type: modelType,
+      schema: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          name: { type: 'string' },
+          email: { type: 'string' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
     }),
     ApiBadRequestResponse({ description: 'Bad Request' }),
     ApiConflictResponse({ description: `Conflict: ${value} already exists` }),

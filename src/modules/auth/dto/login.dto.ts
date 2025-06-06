@@ -13,8 +13,9 @@ export class LoginDto {
 
   @ApiProperty({
     title: 'User password',
-    description: 'Password of the user',
-    example: 'StrongPass@123',
+    description:
+      'Password is too weak, it must contain at least one number, one capital letter, one lowercase letter and one special character.',
+    example: 'StrongPass123!',
     minLength: 8,
   })
   @IsStrongPassword()

@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
-  ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -9,9 +9,12 @@ import {
 export function ApiDocLoginGeneric(value: string) {
   return applyDecorators(
     ApiOperation({ summary: `Login to ${value}` }),
-    ApiCreatedResponse({
-      description: `Successfully authenticated. Returns an access token`,
-      type: String,
+    ApiOkResponse({
+      description: 'Successfully authenticated. Returns an access token',
+      schema: {
+        type: 'object',
+        properties: { access_token: { type: 'string' } },
+      },
     }),
     ApiUnauthorizedResponse({ description: 'Invalid credentials' }),
     ApiBadRequestResponse({ description: 'Bad Request' }),
