@@ -3,11 +3,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export const swaggerConfig = (app: INestApplication) => {
   const docOptions = new DocumentBuilder()
-    .setTitle('Shorten URLs')
-    .setDescription('Shorten URLs API documentation')
+    .setTitle('URL Shortener API')
+    .setDescription('API documentation for the URL Shortener service')
     .setVersion('1.0')
-    // .addTag('shorten-urls')
-    // .addBearerAuth()
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, docOptions);
