@@ -34,11 +34,9 @@ export class UrlsController {
     return this.urlsService.findAll(userId!);
   }
 
-  @Get(':id')
-  @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string, @Req() req: Request) {
-    const userId = req.user?.id;
-    return this.urlsService.findOne(id, userId!);
+  @Get(':shortCode')
+  findByShortCode(@Param('shortCode') shortCode: string) {
+    return this.urlsService.findByShortCode(shortCode);
   }
 
   @Patch(':id')
@@ -53,7 +51,9 @@ export class UrlsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.urlsService.remove(id);
+  @UseGuards(AuthGuard)
+  remove(@Param('id') id: string, @Req() req: Request) {
+    const userId = req.user?.id;
+    return this.urlsService.remove(id, userId!);
   }
 }

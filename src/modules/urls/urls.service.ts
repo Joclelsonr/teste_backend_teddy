@@ -2,63 +2,94 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Url } from '@prisma/client';
 
 @Injectable()
 export class UrlsService {
   constructor(private readonly prismaService: PrismaService) {}
-  async create(createUrlDto: CreateUrlDto, userId?: string) {
-    let shortCode = this.generateShortCode();
-    let exists = true;
 
-    while (exists) {
+  private async findUniqueShortCode(): Promise<string> {
+    let shortCode: string;
+    let exists = true;
+    do {
       shortCode = this.generateShortCode();
-      exists = !!(await this.prismaService.url.findUnique({
-        where: { shortUrl: shortCode },
-      }));
-    }
+      exists = await this.urlExists(shortCode);
+    } while (exists);
+    return shortCode;
+  }
+
+  private async urlExists(shortCode: string): Promise<boolean> {
+    const url = await this.prismaService.url.findUnique({
+      where: { shortUrl: shortCode },
+    });
+    return !!url;
+  }
+
+  private async getUrlOrThrow(id: string, userId?: string): Promise<Url> {
+    const where = { id, deletedAt: null, ...(userId && { userId }) };
+    const url = await this.prismaService.url.findUnique({ where });
+    if (!url) throw new NotFoundException('URL not found');
+    return url;
+  }
+
+  async create(
+    createUrlDto: CreateUrlDto,
+    userId?: string,
+  ): Promise<{ shortUrl: string }> {
+    const shortCode = await this.findUniqueShortCode();
     const createdUrl = await this.prismaService.url.create({
       data: {
         originalUrl: createUrlDto.url,
         shortUrl: shortCode,
-        userId: userId ? userId : undefined,
+        ...(userId && { userId }),
       },
     });
-    return { shortUrl: `${process.env.APP_URL}/` + createdUrl.shortUrl };
+    return { shortUrl: `${process.env.APP_URL}/${createdUrl.shortUrl}` };
   }
 
-  findAll(id: string) {
-    return this.prismaService.url.findMany({ where: { userId: id } });
+  async findByShortCode(shortCode: string): Promise<{ originalUrl: string }> {
+    const url = await this.prismaService.url.findUnique({
+      where: { shortUrl: shortCode, deletedAt: null },
+    });
+    if (!url) throw new NotFoundException('CODE not found');
+    const updateUrl = await this.prismaService.url.update({
+      where: { shortUrl: shortCode },
+      data: { clicks: { increment: 1 } },
+    });
+    return { originalUrl: updateUrl.originalUrl };
   }
 
-  async findOne(id: string, userId: string) {
-    const exists = await this.findById(id);
-    if (!exists) throw new NotFoundException('URL not found');
-    return this.prismaService.url.findFirst({ where: { id, userId } });
+  findAll(userId: string): Promise<Url[]> {
+    return this.prismaService.url.findMany({
+      where: { userId, deletedAt: null },
+    });
   }
 
-  async findById(id: string) {
-    return await this.prismaService.url.findUnique({ where: { id } });
-  }
-
-  async update(id: string, updateUrlDto: UpdateUrlDto, userId: string) {
-    const exists = await this.findById(id);
-    if (!exists) throw new NotFoundException('URL not found');
+  async update(
+    id: string,
+    updateUrlDto: UpdateUrlDto,
+    userId: string,
+  ): Promise<Url> {
+    await this.getUrlOrThrow(id, userId);
     return this.prismaService.url.update({
       where: { id, userId },
       data: { originalUrl: updateUrlDto.url },
     });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} url`;
+  async remove(id: string, userId: string): Promise<{ message: string }> {
+    await this.getUrlOrThrow(id, userId);
+    await this.prismaService.url.update({
+      where: { id, userId },
+      data: { deletedAt: new Date() },
+    });
+    return { message: 'URL deleted successfully' };
   }
 
   private generateShortCode(length = 6): string {
     const chars = process.env.SHORT_CODE_CHARS!;
-    let code = '';
-    for (let i = 0; i < length; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
+    return Array.from({ length }, () =>
+      chars.charAt(Math.floor(Math.random() * chars.length)),
+    ).join('');
   }
 }
