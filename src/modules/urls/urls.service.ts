@@ -2,11 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { LoggerService } from '../logger/logger.service';
 import { Url } from '@prisma/client';
 
 @Injectable()
 export class UrlsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   private async findUniqueShortCode(): Promise<string> {
     let shortCode: string;
@@ -36,33 +40,64 @@ export class UrlsService {
     createUrlDto: CreateUrlDto,
     userId?: string,
   ): Promise<{ shortUrl: string }> {
-    const shortCode = await this.findUniqueShortCode();
-    const createdUrl = await this.prismaService.url.create({
-      data: {
-        originalUrl: createUrlDto.url,
-        shortUrl: shortCode,
-        ...(userId && { userId }),
-      },
-    });
-    return { shortUrl: `${process.env.APP_URL}/${createdUrl.shortUrl}` };
+    try {
+      const shortCode = await this.findUniqueShortCode();
+      const createdUrl = await this.prismaService.url.create({
+        data: {
+          originalUrl: createUrlDto.url,
+          shortUrl: shortCode,
+          ...(userId && { userId }),
+        },
+      });
+      return { shortUrl: `${process.env.APP_URL}/${createdUrl.shortUrl}` };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack =
+        error instanceof Error ? error.stack : 'No stack trace available';
+      this.loggerService.error('Error creating URL', errorMessage, errorStack);
+      throw new NotFoundException(errorMessage);
+    }
   }
 
   async findByShortCode(shortCode: string): Promise<{ originalUrl: string }> {
-    const url = await this.prismaService.url.findUnique({
-      where: { shortUrl: shortCode, deletedAt: null },
-    });
-    if (!url) throw new NotFoundException('CODE not found');
-    const updateUrl = await this.prismaService.url.update({
-      where: { shortUrl: shortCode },
-      data: { clicks: { increment: 1 } },
-    });
-    return { originalUrl: updateUrl.originalUrl };
+    try {
+      const url = await this.prismaService.url.findUnique({
+        where: { shortUrl: shortCode, deletedAt: null },
+      });
+      if (!url) throw new NotFoundException('CODE not found');
+      const updateUrl = await this.prismaService.url.update({
+        where: { shortUrl: shortCode },
+        data: { clicks: { increment: 1 } },
+      });
+      return { originalUrl: updateUrl.originalUrl };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack =
+        error instanceof Error ? error.stack : 'No stack trace available';
+      this.loggerService.error(
+        'Error finding URL by short code',
+        errorMessage,
+        errorStack,
+      );
+      throw new NotFoundException(errorMessage);
+    }
   }
 
   findAll(userId: string): Promise<Url[]> {
-    return this.prismaService.url.findMany({
-      where: { userId, deletedAt: null },
-    });
+    try {
+      return this.prismaService.url.findMany({
+        where: { userId, deletedAt: null },
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack =
+        error instanceof Error ? error.stack : 'No stack trace available';
+      this.loggerService.error('Error fetching URLs', errorMessage, errorStack);
+      throw new NotFoundException(errorMessage);
+    }
   }
 
   async update(
@@ -70,20 +105,38 @@ export class UrlsService {
     updateUrlDto: UpdateUrlDto,
     userId: string,
   ): Promise<Url> {
-    await this.getUrlOrThrow(id, userId);
-    return this.prismaService.url.update({
-      where: { id, userId },
-      data: { originalUrl: updateUrlDto.url },
-    });
+    try {
+      await this.getUrlOrThrow(id, userId);
+      return this.prismaService.url.update({
+        where: { id, userId },
+        data: { originalUrl: updateUrlDto.url },
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack =
+        error instanceof Error ? error.stack : 'No stack trace available';
+      this.loggerService.error('Error updating URL', errorMessage, errorStack);
+      throw new NotFoundException(errorMessage);
+    }
   }
 
   async remove(id: string, userId: string): Promise<{ message: string }> {
-    await this.getUrlOrThrow(id, userId);
-    await this.prismaService.url.update({
-      where: { id, userId },
-      data: { deletedAt: new Date() },
-    });
-    return { message: 'URL deleted successfully' };
+    try {
+      await this.getUrlOrThrow(id, userId);
+      await this.prismaService.url.update({
+        where: { id, userId },
+        data: { deletedAt: new Date() },
+      });
+      return { message: 'URL deleted successfully' };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack =
+        error instanceof Error ? error.stack : 'No stack trace available';
+      this.loggerService.error('Error deleting URL', errorMessage, errorStack);
+      throw new NotFoundException(errorMessage);
+    }
   }
 
   private generateShortCode(length = 6): string {
