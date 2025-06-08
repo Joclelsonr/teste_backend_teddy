@@ -33,6 +33,9 @@ export class AuthService {
       });
       return { acceess_token: token };
     } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       const errorStack =

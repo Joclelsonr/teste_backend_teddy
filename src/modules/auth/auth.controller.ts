@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
-import { ApiDocLoginGeneric } from 'src/common/decorators/docs/api-doc-login-generic.decorator';
+import { ApiDocLoginGeneric } from '../../common/decorators/docs/api-doc-login-generic.decorator';
 
 @Controller('auth')
 export class AuthController {
