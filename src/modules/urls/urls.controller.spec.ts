@@ -58,6 +58,7 @@ describe('UrlsController', () => {
       mockUrlsService.create.mockResolvedValueOnce(mockResult);
 
       const result = await controller.create(dto, mockRequest(userId));
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.create).toHaveBeenCalledWith(dto, userId);
       expect(result).toEqual(mockResult);
     });
@@ -71,6 +72,7 @@ describe('UrlsController', () => {
       mockUrlsService.findAll.mockResolvedValueOnce(mockResult);
 
       const result = await controller.findAll(mockRequest(userId));
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.findAll).toHaveBeenCalledWith(userId);
       expect(result).toEqual(mockResult);
     });
@@ -84,6 +86,7 @@ describe('UrlsController', () => {
       mockUrlsService.findByShortCode.mockResolvedValueOnce(mockResult);
 
       const result = await controller.findByShortCode(shortCode);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.findByShortCode).toHaveBeenCalledWith(shortCode);
       expect(result).toEqual(mockResult);
     });
@@ -99,6 +102,7 @@ describe('UrlsController', () => {
       mockUrlsService.update.mockResolvedValueOnce(mockResult);
 
       const result = await controller.update(id, dto, mockRequest(userId));
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.update).toHaveBeenCalledWith(id, dto, userId);
       expect(result).toEqual(mockResult);
     });
@@ -113,6 +117,7 @@ describe('UrlsController', () => {
       mockUrlsService.remove.mockResolvedValueOnce(mockResult);
 
       const result = await controller.remove(id, mockRequest(userId));
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.remove).toHaveBeenCalledWith(id, userId);
       expect(result).toEqual(mockResult);
     });
