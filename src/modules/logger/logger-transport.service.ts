@@ -1,7 +1,7 @@
 import { Inject, LogLevel } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { LoggerTransportInterface } from './interfaces/logger-transport.interface';
-import { loggerConfig } from 'src/common/config/logger.config';
+import { loggerConfig } from '../../common/config/logger.config';
 
 export class LoggerTransportService {
   private readonly logLevels: LogLevel[] = ['error'];
