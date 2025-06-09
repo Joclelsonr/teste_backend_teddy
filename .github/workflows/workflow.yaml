@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,4 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
         run: npm run test
