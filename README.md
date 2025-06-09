@@ -1,98 +1,172 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
+<spam align="center">
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# 🔗 Encurtador de URLs - Back-End com Nest Js
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+</spam>
+<br>
 
-## Description
+Projeto técnico para criação de uma API REST que encurta URLs, com autenticação, controle de cliques, e funcionalidades para usuários autenticados.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📌 Tecnologias
 
-## Project setup
+- [NestJS](https://nestjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Prisma ORM](https://www.prisma.io/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [JWT](https://jwt.io/)
+- [Husky + Lint-Staged + Eslint + Prettier + Commit-lint](https://typicode.github.io/husky/#/)
+- [Swagger](https://swagger.io/)
+- Testes com [Jest](https://jestjs.io/)
+- Logs com [Sentry](https://sentry.io/)
 
-```bash
-$ npm install
-```
+## 🛠️ Funcionalidades
 
-## Compile and run the project
+- **Cadastro e login de usuários**: Crie sua conta e faça login com e-mail e senha para gerenciar seus links com segurança.
+- **Encurtamento de URLs**: Transforme links longos em endereços curtos e fáceis de compartilhar com até 6 caracteres únicos.
+- **Uso público e privado**: Qualquer pessoa pode encurtar uma URL — com ou sem login. Usuários autenticados têm controle total sobre seus links.
+- **Gerenciamento de URLs**: Visualize todas as URLs que você encurtou, edite o destino, verifique quantos acessos teve e exclua quando quiser.
+- **Soft delete seguro**: As URLs excluídas não somem do banco — elas apenas deixam de funcionar, mantendo integridade e histórico.
+- **Observabilidade**: Monitoramento e rastreamento de erros em tempo real com Sentry para garantir a qualidade e performance da aplicação.
 
-```bash
-# development
-$ npm run start
+## 🚀 Como rodar o projeto localmente
 
-# watch mode
-$ npm run start:dev
+### Pré-requisitos
 
-# production mode
-$ npm run start:prod
-```
+- Node.js 18+
+- Docker + Docker Compose
 
-## Run tests
+### Passos
 
 ```bash
-# unit tests
-$ npm run test
+# Clone o repositório
+git clone https://github.com/Joclelsonr/teste_backend_teddy.git
+cd teste_backend_teddy
 
-# e2e tests
-$ npm run test:e2e
+# Copie o arquivo de variáveis de ambiente
+cp .env.example .env
 
-# test coverage
-$ npm run test:cov
+# Suba os serviços com Docker
+docker-compose up -d
+
+# Acesse a documentação da API
+http://localhost:3000/docs
 ```
 
-## Deployment
+## 📦 Variáveis de Ambiente
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+<details>
+  <summary><code>.env</code></summary>
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+# App
+PORT=3000
+APP_URL="http://localhost:${PORT}"
+
+# Database
+DB_HOST="localhost"
+DB_PORT=5432
+DB_USER="postgres"
+DB_PASSWORD="postgres"
+DB_NAME="short-url"
+DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+
+# JWT
+# crie com -> node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
+JWT_SECRET="your_jwt_secret_here"
+BCRYPT_SALT_ROUNDS=10
+JWT_EXPIRATION="1h"
+
+# Sentry
+SENTRY_DSN=""
+LOG_LEVEL="verbose, log, debug, warn, error"
+TRANSPORT_LEVEL="debug, error"
+TRANSPORT_LOG_LEVEL="debug, error"
+
+SHORT_CODE_CHARS="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+</details>
 
-## Resources
+## 🔌 Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### 🔐 Autenticação e Usuário
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- `POST /users`: Cadastro de usuário
 
-## Support
+- `POST /auth/login`: Login que retorna um token JWT.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 🔗 URLs
 
-## Stay in touch
+- `POST /urls/shorten`: Recebe uma originalUrl válida, gera um shortCode único com até 6 caracteres e retorna shortUrl completo (ex: http://localhost/aZbKq7). Se autenticado: registra o userId na URL.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- `GET /urls`: Retorna todas as urls do usuário se autenticado.
 
-## License
+- `GET /urls/:shortCode`: Redireciona o visitante para a originalUrl e incrementa o contador de cliques.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `PATCH /urls/:id`: Atualiza o campo originalUrl apenas se o usuário estiver autenticado.
+
+- `DELETE /urls/:id`: Soft delete: preenche o campo deletedAt. Impede leitura, redirecionamento e edição futura.
+
+## 📋 Documentação com Swagger
+
+Esta api expõe uma documentação interativa via Swagger para facilitar o consumo da API.
+
+Após iniciar o servidor, acesse a documentação em: [http://localhost:3000/docs](http://localhost:3000/docs)
+
+A API está disponível online em: [https://backend-teddy-ccyv.onrender.com/docs](https://backend-teddy-ccyv.onrender.com/docs)
+
+## 🧪 Rodando os testes
+
+```bash
+npm run test
+```
+
+## ✅ Diferenciais implementados
+
+- Docker Compose para o ambiente
+
+- Ter testes unitários
+
+- Swagger (`/docs`) documentando todos os endpoints
+
+- Validação com `class-validator`
+
+- Soft delete de URLs
+
+- Contagem de cliques
+
+- Registro de data de criação e atualização
+
+- Hooks com Husky + Lint-Staged + pre-commit
+
+- GitHub Actions com lint e testes
+
+- Implementação de observabilidade, Logs com Sentry
+
+## 🚧 Possíveis melhorias futuras
+
+- Rate limit (limite de encurtamentos por IP/token)
+
+- Expiração de links temporários
+
+- Painel de analytics com gráficos
+
+- Customização do shortCode (para links do tipo /meu-link)
+
+## 📈 Escalabilidade (horizontal)
+
+Pontos de melhoria caso a API precise escalar horizontalmente:
+
+- Armazenar cliques em uma fila (ex: Redis + BullMQ)
+
+- Cachear redirecionamentos com Redis
+
+- Usar um serviço separado para rastreamento de analytics
+
+- Load Balance - Balanceador de carga ex: ELB (AWS)
+
+- Banco replicado com leitura/escrita separadas
