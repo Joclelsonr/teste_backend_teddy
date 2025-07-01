@@ -39,7 +39,7 @@ export class UrlsService {
   async create(
     createUrlDto: CreateUrlDto,
     userId?: string,
-  ): Promise<{ shortUrl: string }> {
+  ): Promise<{ shortCode: string }> {
     try {
       const shortCode = await this.findUniqueShortCode();
       const createdUrl = await this.prismaService.url.create({
@@ -49,7 +49,7 @@ export class UrlsService {
           ...(userId && { userId }),
         },
       });
-      return { shortUrl: `${process.env.APP_URL}/${createdUrl.shortUrl}` };
+      return { shortCode: createdUrl.shortUrl };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

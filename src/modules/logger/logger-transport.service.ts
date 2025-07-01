@@ -6,6 +6,7 @@ import { loggerConfig } from '../../common/config/logger.config';
 export class LoggerTransportService {
   private readonly logLevels: LogLevel[] = ['error'];
   private readonly loggerTransports: LoggerTransportInterface[] = [];
+
   constructor(
     @Inject(loggerConfig.KEY)
     private config: ConfigType<typeof loggerConfig>,

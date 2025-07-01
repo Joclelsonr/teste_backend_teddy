@@ -31,7 +31,7 @@ export class AuthService {
         userId: user.id,
         email: user.email,
       });
-      return { acceess_token: token };
+      return { acceess_token: token, user: { id: user.id, email: user.email } };
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
